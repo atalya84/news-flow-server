@@ -18,20 +18,18 @@ export const googleSignin = async (req: Request, res: Response) => {
         if (email != null) {
             let user = await User.findOne({ 'email': email });
             if (user == null) {
-                user = await User.create(
-                    {
-                        'name': email,
-                        'email': email,
-                        'password': '0',
-                        'imgUrl': payload?.picture
-                    });
+                user = await User.create({
+                    'name': email,
+                    'email': email,
+                    'password': '0',
+                    'imgUrl': payload?.picture
+                });
             }
             const tokens = await generateTokens(user)
-            res.status(200).send(
-                {
-                    user,
-                    ...tokens
-                })
+            res.status(200).send({
+                user,
+                ...tokens
+            })
         }
     } catch (err) {
         return res.status(400).send(err.message);
@@ -40,8 +38,8 @@ export const googleSignin = async (req: Request, res: Response) => {
 }
 
 const generateTokens = async (user: Document & IUser) => {
-    const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
-    const refreshToken = jwt.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET);
+    const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_EXPIRATION });
+    const refreshToken = jwt.sign({ _id: user._id }, process.env.JWT_REFRESH_TOKEN);
     if (user.refreshTokens == null) {
         user.refreshTokens = [refreshToken];
     } else {
