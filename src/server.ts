@@ -1,10 +1,9 @@
-import initApp from "./app";
-import https from 'https';
+import init from "./app";
 
-initApp().then((app) => {
-  https.createServer(app).listen(process.env.PORT, () => {
-      console.log(
-        "App is listening at http://localhost:" + process.env.PORT || 3000
-      );
-    });
+init().then((app) => {
+  app.listen(process.env.PORT, () => {
+    console.log(
+      "Example app listening at http://localhost:" + process.env.PORT
+    );
+  });
 });
