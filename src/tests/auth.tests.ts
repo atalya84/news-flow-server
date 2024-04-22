@@ -1,5 +1,6 @@
 import { Express } from "express";
 import initApp from "../app";
+import request from "supertest";
 
 let app: Express;
 
@@ -14,4 +15,12 @@ beforeAll(async () => {
   console.log("beforeAll");
 });
 
-describe("Auth tests", () => {});
+describe("Auth tests", () => {
+
+  test("Test Register with name", async () => {
+    const response = await request(app)
+      .post("/auth/register")
+      .send(user);
+    expect(response.statusCode).toBe(201);
+  });
+});
