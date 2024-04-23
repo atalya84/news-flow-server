@@ -1,14 +1,13 @@
-import { Express } from "express";
 import initApp from "../app";
 import request from "supertest";
+import { Express } from "express";
 
 let app: Express;
-
 const user = {
-  email: "jhonDoe@test.com",
-  password: "abcd1234",
-  name: "jhon",
-};
+  email: "testUser@test.com",
+  password: "1234567890",
+  name: "mr.test"
+}
 
 beforeAll(async () => {
   app = await initApp();
