@@ -56,7 +56,7 @@ export class BaseController<ModelType> {
 	async delete(req: Request, res: Response) {
 		try {
 			const result = await this.model
-				.findByIdAndDelete({ _id: req.params.id })
+				.findByIdAndDelete(req.params.id)
 				.exec();
 			res.status(201).send(result);
 		} catch (err) {
