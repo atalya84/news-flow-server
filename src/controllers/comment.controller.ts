@@ -8,21 +8,9 @@ class CommentController extends BaseController<IComment> {
 		super(commentModel);
 	}
 
-	async getAll(req: Request, res: Response): Promise<void> {
-		super.getAll(req, res);
-	}
-	async get(req: Request, res: Response): Promise<void> {
-		super.get(req, res);
-	}
 	async post(req: Request, res: Response): Promise<void> {
 		req.body.created = new Date();
 		super.post(req, res);
-	}
-	async put(req: Request, res: Response): Promise<void> {
-		super.put(req, res);
-	}
-	async delete(req: Request, res: Response): Promise<void> {
-		super.delete(req, res);
 	}
 	async getCommentsByUserId(req: Request, res: Response): Promise<void> {
 		try {
