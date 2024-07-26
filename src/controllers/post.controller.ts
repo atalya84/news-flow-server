@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { IPost } from '../models/post.model';
-import postModel from '../models/post.model';
+import postModel, { IPost } from '../models/post.model';
 import { BaseController } from './base.controller';
 
 class PostController extends BaseController<IPost> {
