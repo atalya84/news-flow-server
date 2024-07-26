@@ -4,6 +4,7 @@ import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import userRouter from './routes/user.routes';
 
 const initApp = (): Promise<Express> => {
 	const promise = new Promise<Express>((resolve) => {
@@ -30,6 +31,7 @@ const initApp = (): Promise<Express> => {
 
 				app.use('/auth', authRoute);
 				app.use('/posts', postRouter);
+				app.use('/users', userRouter);
 
 				app.get('/liveness', (req, res) => {
 					res.status(200).send('OK');
