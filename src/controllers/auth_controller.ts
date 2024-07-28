@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import User, { IUser } from '../models/user_model';
 import jwt from 'jsonwebtoken';
@@ -120,18 +120,24 @@ export const refresh = async (req: Request, res: Response) => {
         return res.sendStatus(401);
     }
     try {
+        console.log(refreshToken)
+        console.log()
         jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err, data: jwt.JwtPayload) => {
             if (err) {
-                return res.sendStatus(403);
+                console.log(err)
+                console.log("here")
+                return res.sendStatus(401);
             }
-            const user = await User.findOne({ _id: data._id });
+            const user = await User.findOne({ _id: data.id });
             if (user == null) {
-                return res.sendStatus(403);
+                console.log("here1")
+                return res.sendStatus(401);
             }
             if (!user.tokens.includes(refreshToken)) {
                 user.tokens = [];
                 await user.save();
-                return res.sendStatus(403);
+                console.log("here2")
+                return res.sendStatus(401);
             }
             user.tokens = user.tokens.filter((token) => token !== refreshToken);
             const tokens = await generateTokens(user);
@@ -149,4 +155,20 @@ const extractToken = (req: Request): string => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     return token;
+}
+
+export type AuthRequest = Request & { user: { _id: string } };
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const token = extractToken(req);
+    if (token == null) {
+        return res.sendStatus(401);
+    }
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, data: jwt.JwtPayload) => {
+        if (err) {
+            return res.sendStatus(401);
+        }
+        const id = data._id;
+        req.user = { _id: id };
+        return next();
+    });
 }

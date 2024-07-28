@@ -1,6 +1,7 @@
 import authRoute from './routes/auth_routes';
 import postRouter from './routes/post.router';
 import fileRouter from './routes/file_routes';
+import userRouter from './routes/user.routes';
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -35,6 +36,7 @@ const initApp = (): Promise<Express> => {
 				app.use('/auth', authRoute);
 				app.use('/posts', postRouter);
 				app.use('/file', fileRouter);
+				app.use('/users', userRouter);
 
 				app.get('/liveness', (req, res) => {
 					res.status(200).send('OK');
