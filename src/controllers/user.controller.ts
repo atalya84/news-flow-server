@@ -5,11 +5,11 @@ import { AuthRequest } from "./auth_controller";
 
 class UserController extends BaseController<IUser> {
     async getSelf(req: AuthRequest, res: Response) {
+        console.log('server execure getself')
         try {
             const user = await this.model.findById(req.user._id);
             res.send({ user });
         } catch (err) {
-            console.log("heelo darknes")
             res.status(500).json({ message: err.message });
         }
     }
