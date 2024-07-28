@@ -14,8 +14,11 @@ export interface IPost {
 
 const postSchema = new Schema<IPost>({
 	title: { type: String, required: true },
+	source: { type: String, required: true },
+	country: { type: String, required: true },
 	userId: { type: String, required: true },
 	comments: [commentSchema],
+	body: String,
 	imgUrl: String,
 });
 
