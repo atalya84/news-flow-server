@@ -26,7 +26,7 @@ class PostController extends BaseController<IUser> {
 		super.put(req, res);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
-		super.post(req, res);
+		super.delete(req, res);
 	}
 }
 
