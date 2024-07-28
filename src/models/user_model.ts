@@ -7,7 +7,7 @@ export interface IUser {
     name: string;
     lastName: string;
     imgUrl?: string;
-    refreshTokens?: string[];
+    tokens: string[];
     // comments: Array<{ type: mongoose.Schema.Types.ObjectId; ref: "comments" }>;
     // items: Array<{ type: mongoose.Schema.Types.ObjectId; ref: "Items"}>
   }
@@ -32,13 +32,9 @@ export interface IUser {
     imgUrl: {
       type: String,
     },
-    // items: {
-    //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Items" }]
-    // },
-    refreshTokens: {
+    tokens: {
       type: [String],
-      required: false,
-    }
+    },
   });
 
   export default mongoose.model<IUser>("User", userSchema);
