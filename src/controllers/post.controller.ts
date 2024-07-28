@@ -20,7 +20,7 @@ class PostController extends BaseController<IPost> {
 		super.put(req, res);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
-		super.post(req, res);
+		super.delete(req, res);
 	}
 }
 
