@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import userModel, { IUser } from '../models/user_model';
 import { BaseController } from './base.controller';
 
-class PostController extends BaseController<IUser> {
+class UserController extends BaseController<IUser> {
 	constructor() {
 		super(userModel);
 	}
@@ -19,12 +19,6 @@ class PostController extends BaseController<IUser> {
 		console.log('Retrieving user:', user);
 		res.send(user);
 	}
-	async post(req: Request, res: Response): Promise<void> {
-		super.post(req, res);
-	}
-	async put(req: Request, res: Response): Promise<void> {
-		super.put(req, res);
-	}
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
 	}
@@ -40,4 +34,4 @@ const removePrivateData = (
 	imgUrl: user.imgUrl,
 });
 
-export default new PostController();
+export default new UserController();
