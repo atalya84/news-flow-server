@@ -26,10 +26,9 @@ class UserController extends BaseController<IUser> {
 
 const removePrivateData = (
 	user: IUser
-): Omit<IUser, 'password' | 'refreshTokens'> => ({
+): Omit<IUser, 'password' | 'refreshTokens' | 'lastName'> => ({
 	_id: user._id,
 	name: user.name,
-	lastName: user.lastName,
 	email: user.email,
 	imgUrl: user.imgUrl,
 });
