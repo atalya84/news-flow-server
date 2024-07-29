@@ -1,11 +1,14 @@
-import UserModel, { IUser } from "../models/user_model";
-import { BaseController } from "./base.controller";
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
+import userModel, { IUser } from '../models/user_model';
+import { BaseController } from './base.controller';
 import { AuthRequest } from "./auth_controller";
 
-class UserController extends BaseController<IUser> {
-    async getSelf(req: AuthRequest, res: Response) {
-        console.log('server execure getself')
+class PostController extends BaseController<IUser> {
+	constructor() {
+		super(userModel);
+	}
+
+	async getSelf(req: AuthRequest, res: Response) {
         try {
             const user = await this.model.findById(req.user._id);
             res.send({ user });
@@ -13,8 +16,39 @@ class UserController extends BaseController<IUser> {
             res.status(500).json({ message: err.message });
         }
     }
+
+	async getAll(req: Request, res: Response): Promise<void> {
+		const users = (await this.model.find()).map(removePrivateData);
+		res.send(users);
+	}
+
+	async get(req: Request, res: Response): Promise<void> {
+		const checkUser = await this.model.findById(req.params._id)
+		const user = removePrivateData(
+			await this.model.findById(req.params._id)
+		);
+		res.send(user);
+	}
+	async post(req: Request, res: Response): Promise<void> {
+		super.post(req, res);
+	}
+	async put(req: Request, res: Response): Promise<void> {
+		super.put(req, res);
+	}
+	async delete(req: Request, res: Response): Promise<void> {
+		super.delete(req, res);
+	}
 }
 
-const userController = new UserController(UserModel);
+const removePrivateData = (
+	user: IUser
+	
+): Omit<IUser, 'password' | 'tokens'> => ({
+	_id: user._id,
+	name: user.name,
+	lastName: user.lastName,
+	email: user.email,
+	imgUrl: user.imgUrl,
+});
 
-export default userController
+export default new PostController();

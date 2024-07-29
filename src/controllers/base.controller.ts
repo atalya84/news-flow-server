@@ -58,7 +58,7 @@ export class BaseController<ModelType> {
 			const result = await this.model
 				.findByIdAndDelete({ _id: req.params.id })
 				.exec();
-			res.status(201).send(result);
+			res.status(200).send(result);
 		} catch (err) {
 			console.error('Error: ', err.message);
 			res.status(406).send(

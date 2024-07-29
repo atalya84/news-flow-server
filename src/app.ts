@@ -35,8 +35,8 @@ const initApp = (): Promise<Express> => {
 
 				app.use('/auth', authRoute);
 				app.use('/posts', postRouter);
-				app.use('/file', fileRouter);
 				app.use('/users', userRouter);
+				app.use('/file', fileRouter);
 
 				app.get('/liveness', (req, res) => {
 					res.status(200).send('OK');

@@ -4,16 +4,22 @@ import { commentSchema } from './comment.model';
 
 export interface IPost {
 	title: string;
-	image: string;
+	source: string;
+	country: string;
+	body: string;
+	imgUrl: string;
 	comments: IComment[];
-	owner: string;
+	userId: string;
 }
 
 const postSchema = new Schema<IPost>({
 	title: { type: String, required: true },
-	owner: { type: String, required: true },
+	source: { type: String, required: true },
+	country: { type: String, required: true },
+	userId: { type: String, required: true },
 	comments: [commentSchema],
-	image: String,
+	body: String,
+	imgUrl: String,
 });
 
 export default model<IPost>('Post', postSchema);

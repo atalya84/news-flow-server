@@ -42,7 +42,6 @@ export const googleSignin = async (req: Request, res: Response) => {
 const generateTokens = async (user: Document<unknown, object, IUser> & IUser & Required<{
     _id: string;
 }>): Promise<{ "accessToken": string, "refreshToken": string }> => {
-    console.log('server execure generateTokens')
     const accessToken = jwt.sign({ "_id": user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION });
     const random = Math.floor(Math.random() * 1000000).toString();
     const refreshToken = jwt.sign({ "_id": user._id, "random": random }, process.env.TOKEN_SECRET, {});
@@ -52,7 +51,6 @@ const generateTokens = async (user: Document<unknown, object, IUser> & IUser & R
     user.tokens.push(refreshToken);
     try {
         await user.save();
-        console.log("in generateTokens", refreshToken)
         return {
             "accessToken": accessToken,
             "refreshToken": refreshToken
@@ -63,7 +61,6 @@ const generateTokens = async (user: Document<unknown, object, IUser> & IUser & R
 }
 
 export const register = async (req: Request, res: Response) => {
-    console.log('server execure register')
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
@@ -86,7 +83,6 @@ export const register = async (req: Request, res: Response) => {
 }
 
 export const login = async (req: Request, res: Response) => {
-    console.log('server execure login')
     const email = req.body.email;
     const password = req.body.password;
     if (email === undefined || password === undefined) {
@@ -118,8 +114,6 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const refresh = async (req: Request, res: Response) => {
-    console.log('server execure refresh')
-    // const refreshToken = extractToken(req);
     const refreshToken = req.headers['refresh_token'] as string;
     if (refreshToken == null) {
         return res.sendStatus(401);
@@ -127,20 +121,15 @@ export const refresh = async (req: Request, res: Response) => {
     try {        
         jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err, data: jwt.JwtPayload) => {
             if (err) {
-                console.log("here")
                 return res.sendStatus(401);
             }
             const user = await User.findOne({ _id: data._id });
-            console.log("user token in refresh", refreshToken )
-            console.log("the correct refresh token",user.tokens )
             if (user == null) {
-                console.log("here1")
                 return res.sendStatus(401);
             }
             if (!user.tokens.includes(refreshToken)) {
                 user.tokens = [];
                 await user.save();
-                console.log("here2")
                 return res.sendStatus(401);
             }
             user.tokens = user.tokens.filter((token) => token !== refreshToken);
@@ -148,7 +137,6 @@ export const refresh = async (req: Request, res: Response) => {
             if (tokens == null) {
                 return res.status(400).send("Error generating tokens");
             }
-            console.log("successsss")
             return res.status(200).send(tokens);
         });
     } catch (err) {
@@ -164,7 +152,6 @@ const extractToken = (req: Request): string => {
 
 export type AuthRequest = Request & { user: { _id: string } };
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
-    console.log('server execure authMiddleware')
     const token = extractToken(req);
     if (token == null) {
         return res.sendStatus(401);

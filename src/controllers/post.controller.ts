@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { IPost } from '../models/post.model';
-import postModel from '../models/post.model';
+import postModel, { IPost } from '../models/post.model';
 import { BaseController } from './base.controller';
 
 class PostController extends BaseController<IPost> {
@@ -21,7 +20,7 @@ class PostController extends BaseController<IPost> {
 		super.put(req, res);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
-		super.post(req, res);
+		super.delete(req, res);
 	}
 }
 
