@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import postModel, { IPost } from '../models/post.model';
 import { BaseController } from './base.controller';
+import { IComment } from '../models/comment.model';
 
 class PostController extends BaseController<IPost> {
 	constructor() {
@@ -14,6 +15,7 @@ class PostController extends BaseController<IPost> {
 		super.get(req, res);
 	}
 	async post(req: Request, res: Response): Promise<void> {
+		req.body.created = new Date();
 		super.post(req, res);
 	}
 	async put(req: Request, res: Response): Promise<void> {
@@ -21,6 +23,26 @@ class PostController extends BaseController<IPost> {
 	}
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
+	}
+	async createComment(req: Request, res: Response) {
+		try {
+			req.body.created = new Date();
+			const result = await postModel
+				.findByIdAndUpdate(
+					req.params.id,
+					{
+						$push: { comments: req.body },
+					},
+					{ returnOriginal: false }
+				)
+				.exec();
+			res.status(201).send(result);
+		} catch (err) {
+			console.error('Error: ', err.message);
+			res.status(406).send(
+				'Could not update the requested object: ' + err.message
+			);
+		}
 	}
 }
 
