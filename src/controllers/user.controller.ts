@@ -3,7 +3,7 @@ import userModel, { IUser } from '../models/user_model';
 import { BaseController } from './base.controller';
 import { AuthRequest } from "./auth_controller";
 
-class PostController extends BaseController<IUser> {
+class UserController extends BaseController<IUser> {
 	constructor() {
 		super(userModel);
 	}
@@ -29,12 +29,6 @@ class PostController extends BaseController<IUser> {
 		);
 		res.send(user);
 	}
-	async post(req: Request, res: Response): Promise<void> {
-		super.post(req, res);
-	}
-	async put(req: Request, res: Response): Promise<void> {
-		super.put(req, res);
-	}
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
 	}
@@ -46,9 +40,8 @@ const removePrivateData = (
 ): Omit<IUser, 'password' | 'tokens'> => ({
 	_id: user._id,
 	name: user.name,
-	lastName: user.lastName,
 	email: user.email,
 	imgUrl: user.imgUrl,
 });
 
-export default new PostController();
+export default new UserController();

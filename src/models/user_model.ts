@@ -5,7 +5,6 @@ export interface IUser {
     email: string;
     password: string;
     name: string;
-    lastName: string;
     imgUrl?: string;
     tokens: string[];
     // comments: Array<{ type: mongoose.Schema.Types.ObjectId; ref: "comments" }>;
@@ -21,10 +20,6 @@ export interface IUser {
       type: String,
       required: false
     },
-    lastName: {
-        type: String,
-        required: false
-      },
     password: {
       type: String,
       required: true,
