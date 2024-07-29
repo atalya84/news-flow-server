@@ -23,9 +23,8 @@ class UserController extends BaseController<IUser> {
 	}
 
 	async get(req: Request, res: Response): Promise<void> {
-		const checkUser = await this.model.findById(req.params._id)
 		const user = removePrivateData(
-			await this.model.findById(req.params._id)
+			await this.model.findById(req.params.id)
 		);
 		res.send(user);
 	}
