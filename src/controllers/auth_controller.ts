@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import User, { IUser } from '../models/user_model';
 import jwt from 'jsonwebtoken';
@@ -46,10 +46,10 @@ const generateTokens = async (user: Document<unknown, object, IUser> & IUser & R
     const accessToken = jwt.sign({ "_id": user._id }, process.env.TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION });
     const random = Math.floor(Math.random() * 1000000).toString();
     const refreshToken = jwt.sign({ "_id": user._id, "random": random }, process.env.TOKEN_SECRET, {});
-    if (user.refreshTokens == null) {
-        user.refreshTokens = [];
+    if (user.tokens == null) {
+        user.tokens = [];
     }
-    user.refreshTokens.push(refreshToken);
+    user.tokens.push(refreshToken);
     try {
         await user.save();
         return {
@@ -81,4 +81,88 @@ export const register = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(400).send(err.message);
     }
+}
+
+export const login = async (req: Request, res: Response) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    if (email === undefined || password === undefined) {
+        return res.status(400).send("Email and password are required");
+    }
+
+    try {
+        const user = await User.findOne({ email: email });
+        if (user == null) {
+            return res.status(400).send("User doesnot exists");
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).send("Invalid credentials");
+        }
+        const tokens = await generateTokens(user);
+        if (tokens == null) {
+            return res.status(400).send("Error generating tokens");
+        }
+
+        const user_response = {
+            user,
+            ...tokens
+        };
+        return res.status(200).send(user_response);
+    } catch (err) {
+        return res.status(400).send(err.message);
+    }
+}
+
+export const refresh = async (req: Request, res: Response) => {
+    const refreshToken = req.headers['refresh_token'] as string;
+    if (refreshToken == null) {
+        return res.sendStatus(401);
+    }
+    try {        
+        jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err, data: jwt.JwtPayload) => {
+            if (err) {
+                return res.sendStatus(401);
+            }
+            const user = await User.findOne({ _id: data._id });
+            if (user == null) {
+                return res.sendStatus(401);
+            }
+            if (!user.tokens.includes(refreshToken)) {
+                user.tokens = [];
+                await user.save();
+                return res.sendStatus(401);
+            }
+            user.tokens = user.tokens.filter((token) => token !== refreshToken);
+            const tokens = await generateTokens(user);
+            if (tokens == null) {
+                return res.status(400).send("Error generating tokens");
+            }
+            return res.status(200).send(tokens);
+        });
+    } catch (err) {
+        return res.status(401).send(err.message);
+    }
+}
+
+const extractToken = (req: Request): string => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    return token;
+}
+
+export type AuthRequest = Request & { user: { _id: string } };
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const token = extractToken(req);
+    if (token == null) {
+        return res.sendStatus(401);
+    }
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, data: jwt.JwtPayload) => {
+        if (err) {
+            return res.sendStatus(401);
+        }
+        const id = data._id;
+        req.user = { _id: id };
+        return next();
+    });
 }
