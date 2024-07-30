@@ -166,3 +166,34 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
         return next();
     });
 }
+
+export const logout = async (req: Request, res: Response) => {
+    const refreshToken = req.headers['refresh_token'] as string;
+    if (refreshToken == null) {
+        console.log("on logout - refreshToken is null")
+        return res.sendStatus(401);
+    }
+    jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err, data: jwt.JwtPayload) => {
+        if (err) {
+            console.log("error in jwt.verify on logout:", err)
+            return res.sendStatus(401);
+        }
+        try {
+            const user = await User.findOne({ '_id': data._id });
+            if (user == null) {
+                console.log("on logout - user is null")
+                return res.sendStatus(401);
+            }
+            if (!user.tokens.includes(refreshToken)) {
+                user.tokens = [];
+                await user.save();
+                return res.sendStatus(401);
+            }
+            user.tokens = user.tokens.filter((token) => token !== refreshToken);
+            await user.save();
+            return res.status(200).send();
+        } catch (err) {
+            return res.status(400).send(err.message);
+        }
+    });
+}
