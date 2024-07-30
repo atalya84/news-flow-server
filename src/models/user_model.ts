@@ -7,7 +7,7 @@ export interface IUser {
     name: string;
     lastName: string;
     imgUrl?: string;
-    refreshTokens?: string[];
+    tokens?: string[];
     // comments: Array<{ type: mongoose.Schema.Types.ObjectId; ref: "comments" }>;
     // items: Array<{ type: mongoose.Schema.Types.ObjectId; ref: "Items"}>
   }
@@ -21,10 +21,6 @@ export interface IUser {
       type: String,
       required: false
     },
-    lastName: {
-        type: String,
-        required: false
-      },
     password: {
       type: String,
       required: true,
@@ -35,7 +31,7 @@ export interface IUser {
     // items: {
     //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Items" }]
     // },
-    refreshTokens: {
+    tokens: {
       type: [String],
       required: false,
     }
