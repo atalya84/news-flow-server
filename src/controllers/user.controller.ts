@@ -31,9 +31,7 @@ class UserController extends BaseController<IUser> {
 	}
 }
 
-const removePrivateData = (
-	user: IUser
-): Omit<IUser, 'password' | 'lastName'> => ({
+const removePrivateData = (user: IUser): Omit<IUser, 'password'> => ({
 	_id: user._id,
 	name: user.name,
 	email: user.email,
