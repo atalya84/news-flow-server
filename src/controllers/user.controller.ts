@@ -18,14 +18,12 @@ class UserController extends BaseController<IUser> {
 
 	async getAll(req: Request, res: Response): Promise<void> {
 		const users = (await this.model.find()).map(removePrivateData);
-		console.log('Retrieving users:', users);
 		res.send(users);
 	}
 	async get(req: Request, res: Response): Promise<void> {
 		const user = removePrivateData(
 			await this.model.findById(req.params.id)
 		);
-		console.log('Retrieving user:', user);
 		res.send(user);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
