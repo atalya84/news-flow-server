@@ -24,6 +24,19 @@ class PostController extends BaseController<IPost> {
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
 	}
+	async getUserPosts(req: Request, res: Response): Promise<void> {
+		try {
+			const result = await postModel
+				.find({ userId: req.params.id })
+				.exec();
+			res.status(200).send(result);
+		} catch (err) {
+			console.error('Error: ', err.message);
+			res.status(406).send(
+				'Could not update the requested object: ' + err.message
+			);
+		}
+	}
 	async createComment(req: Request, res: Response) {
 		try {
 			req.body.created = new Date();
