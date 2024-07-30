@@ -8,13 +8,13 @@ class UserController extends BaseController<IUser> {
 		super(userModel);
 	}
 	async getSelf(req: AuthRequest, res: Response) {
-        try {
-            const user = await this.model.findById(req.user._id);
-            res.send({ user });
-        } catch (err) {
-            res.status(500).json({ message: err.message });
-        }
-    }
+		try {
+			const user = await this.model.findById(req.user._id);
+			res.send({ user });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	}
 
 	async getAll(req: Request, res: Response): Promise<void> {
 		const users = (await this.model.find()).map(removePrivateData);
@@ -33,11 +33,12 @@ class UserController extends BaseController<IUser> {
 
 const removePrivateData = (
 	user: IUser
-): Omit<IUser, 'password' | 'refreshTokens' | 'lastName'> => ({
+): Omit<IUser, 'password' | 'lastName'> => ({
 	_id: user._id,
 	name: user.name,
 	email: user.email,
 	imgUrl: user.imgUrl,
+	tokens: user.tokens,
 });
 
 export default new UserController();
