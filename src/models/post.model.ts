@@ -6,10 +6,11 @@ export interface IPost {
 	title: string;
 	source: string;
 	country: string;
-	body: string;
 	imgUrl: string;
 	comments: IComment[];
 	userId: string;
+	created: Date;
+	body?: string;
 }
 
 const postSchema = new Schema<IPost>({
@@ -17,6 +18,7 @@ const postSchema = new Schema<IPost>({
 	source: { type: String, required: true },
 	country: { type: String, required: true },
 	userId: { type: String, required: true },
+	created: { type: Date, required: true },
 	imgUrl: { type: String, required: true },
 	comments: [commentSchema],
 	body: String,
