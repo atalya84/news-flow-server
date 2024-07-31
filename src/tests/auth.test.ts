@@ -202,6 +202,6 @@ describe('Auth API tests', () => {
 			.get(`/users/${user._id}`)
 			.set('authorization', `Bearer ${accessToken}`);
 		expect(getRes.statusCode).toEqual(404);
-		expect(getRes.body).toEqual({});
+		expect(getRes.body.message).toEqual("User not found");
 	});
 });
