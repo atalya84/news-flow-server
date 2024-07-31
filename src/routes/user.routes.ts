@@ -13,6 +13,7 @@ userRouter.get(
 userRouter.get('/', authMiddleware, userController.getAll.bind(userController));
 userRouter.get('/:id', authMiddleware, userController.get.bind(userController));
 userRouter.put('/:id', authMiddleware, userController.put.bind(userController));
+userRouter.put('/:id', authMiddleware, userController.put.bind(userController));
 userRouter.delete(
 	'/:id',
 	authMiddleware,
