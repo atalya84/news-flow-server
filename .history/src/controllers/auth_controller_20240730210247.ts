@@ -19,18 +19,20 @@ export const googleSignin = async (req: Request, res: Response) => {
         if (email != null) {
             let user = await User.findOne({ 'email': email });
             if (user == null) {
-                user = await User.create({
-                    'name': payload?.name,
-                    'email': email,
-                    'password': '0',
-                    'imgUrl': payload?.picture
-                });
+                user = await User.create(
+                    {
+                        'name': email,
+                        'email': email,
+                        'password': '0',
+                        'imgUrl': payload?.picture
+                    });
             }
             const tokens = await generateTokens(user)
-            res.status(200).send({
-                user,
-                ...tokens
-            })
+            res.status(200).send(
+                {
+                    user,
+                    ...tokens
+                })
         }
     } catch (err) {
         return res.status(400).send(err.message);
@@ -75,7 +77,7 @@ export const register = async (req: Request, res: Response) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = await User.create({ email: email, password: hashedPassword, name: name, imgUrl: imgUrl });
-        return res.status(200).send(newUser);
+        return res.send(newUser);
     } catch (err) {
         return res.status(400).send(err.message);
     }

@@ -6,9 +6,12 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userRouter from './routes/user.routes';
+<<<<<<< HEAD
 import 'dotenv/config';
+=======
 import { serve, setup } from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
+>>>>>>> d6c34d0647a8bb3b5436551de914f3cb5e57c29b
 
 const initApp = (): Promise<Express> => {
 	const promise = new Promise<Express>((resolve) => {
