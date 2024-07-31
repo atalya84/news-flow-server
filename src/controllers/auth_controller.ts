@@ -19,20 +19,18 @@ export const googleSignin = async (req: Request, res: Response) => {
         if (email != null) {
             let user = await User.findOne({ 'email': email });
             if (user == null) {
-                user = await User.create(
-                    {
-                        'name': email,
-                        'email': email,
-                        'password': '0',
-                        'imgUrl': payload?.picture
-                    });
+                user = await User.create({
+                    'name': payload?.name,
+                    'email': email,
+                    'password': '0',
+                    'imgUrl': payload?.picture
+                });
             }
             const tokens = await generateTokens(user)
-            res.status(200).send(
-                {
-                    user,
-                    ...tokens
-                })
+            res.status(200).send({
+                user,
+                ...tokens
+            })
         }
     } catch (err) {
         return res.status(400).send(err.message);

@@ -21,9 +21,20 @@ class UserController extends BaseController<IUser> {
 		res.send(users);
 	}
 	async get(req: Request, res: Response): Promise<void> {
-		const user = await this.model.findById(req.params.id);
-		if (user) res.status(200).send(removePrivateData(user));
-		else res.status(404).send(user);
+		try {
+			const user = await this.model.findById(req.params.id);
+			if (!user) {
+				res.status(404).json({ message: 'User not found' });
+				return;
+			}
+			const sanitizedUser = removePrivateData(user);
+			res.send(sanitizedUser);
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	}
+	async put(req: Request, res: Response): Promise<void> {
+		super.put(req, res);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
