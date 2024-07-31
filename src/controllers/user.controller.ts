@@ -21,10 +21,9 @@ class UserController extends BaseController<IUser> {
 		res.send(users);
 	}
 	async get(req: Request, res: Response): Promise<void> {
-		const user = removePrivateData(
-			await this.model.findById(req.params.id)
-		);
-		res.send(user);
+		const user = await this.model.findById(req.params.id);
+		if (user) res.status(200).send(removePrivateData(user));
+		else res.status(404).send(user);
 	}
 	async delete(req: Request, res: Response): Promise<void> {
 		super.delete(req, res);
