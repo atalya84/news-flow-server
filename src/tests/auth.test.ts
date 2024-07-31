@@ -4,6 +4,8 @@ import user_model, { IUser } from '../models/user_model';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { compare } from 'bcrypt';
+import dotenv from 'dotenv';
+import path from 'path';
 
 let app: Express;
 
@@ -19,6 +21,7 @@ let accessToken: string;
 let refreshToken: string;
 
 beforeAll(async () => {
+	dotenv.config({ path: path.resolve(__dirname, '../../.env.test') });
 	app = await initApp();
 });
 
@@ -56,8 +59,6 @@ describe('Auth API tests', () => {
 		refreshToken = res.body.refreshToken;
 		user = res.body.user;
 	});
-
-	
 
 	test('Middleware', async () => {
 		const res = await request(app).get('/users/').send();
@@ -128,45 +129,45 @@ describe('Auth API tests', () => {
 
 	test('POST /refresh', async () => {
 		// Remember to change ACCESS_TOKEN_EXPIRATION in .ENV to 5s
-		await new Promise(r => setTimeout(r, 7000));
+		await new Promise((r) => setTimeout(r, 7000));
 		const res = await request(app)
-		  .get('/users/')
-		  .set('authorization', `Bearer ${accessToken}`);
+			.get('/users/')
+			.set('authorization', `Bearer ${accessToken}`);
 		expect(res.statusCode).not.toEqual(200);
-	
+
 		const res2 = await request(app)
-		  .get('/auth/refresh')
-		  .set('Authorization', `Bearer ${accessToken}`)
-		  .set('refresh_token', refreshToken);
+			.get('/auth/refresh')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.set('refresh_token', refreshToken);
 		expect(res2.statusCode).toEqual(200);
 		expect(res2.body).toHaveProperty('accessToken');
 		expect(res2.body).toHaveProperty('refreshToken');
 		accessToken = res2.body.accessToken;
 		refreshToken = res2.body.refreshToken;
-	
+
 		const res3 = await request(app)
-		  .get('/users')
-		  .set('Authorization', `Bearer ${accessToken}`)
-		  .send();
+			.get('/users')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.send();
 		expect(res3.statusCode).toEqual(200);
-	  });
+	});
 
 	test('Refresh Token hacked', async () => {
 		const res = await request(app)
-		  .get('/auth/refresh')
-		  .set('Authorization', `Bearer ${accessToken}`)
-		  .set('refresh_token', refreshToken);
+			.get('/auth/refresh')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.set('refresh_token', refreshToken);
 		expect(res.statusCode).toEqual(200);
 		const newRefreshToken = res.body.refreshToken;
 		const res2 = await request(app)
-		  .get('/auth/refresh')
-		  .set('Authorization', `Bearer ${accessToken}`)
-		  .set('refresh_token', refreshToken);
+			.get('/auth/refresh')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.set('refresh_token', refreshToken);
 		expect(res2.statusCode).not.toEqual(200);
 		const res3 = await request(app)
-		  .get('/auth/refresh')
-		  .set('Authorization', `Bearer ${accessToken}`)
-		  .set('refresh_token', newRefreshToken);
+			.get('/auth/refresh')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.set('refresh_token', newRefreshToken);
 		expect(res3.statusCode).not.toEqual(200);
 	});
 

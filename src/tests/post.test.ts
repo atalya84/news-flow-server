@@ -4,12 +4,14 @@ import postModel, { IPost } from '../models/post.model';
 import { Express } from 'express';
 import request from 'supertest';
 import { IComment } from '../models/comment.model';
+import dotenv from 'dotenv';
+import path from 'path';
 
-const port = process.env.PORT;
 let app: Express;
 let post: IPost & { _id: string };
 
 beforeAll(async () => {
+	dotenv.config({ path: path.resolve(__dirname, '../../.env.test') });
 	app = await initApp();
 });
 
