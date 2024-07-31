@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userRouter from './routes/user.routes';
+import { serve, setup } from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
 
 const initApp = (): Promise<Express> => {
 	const promise = new Promise<Express>((resolve) => {
@@ -41,6 +43,27 @@ const initApp = (): Promise<Express> => {
 				app.get('/liveness', (req, res) => {
 					res.status(200).send('OK');
 				});
+
+				if (process.env.NODE_ENV == 'development') {
+					const options = {
+						definition: {
+							openapi: '3.0.0',
+							info: {
+								title: 'News-Flow REST API',
+								version: '1.0.0',
+								description:
+									'REST server including authentication using JWT',
+							},
+							servers: [
+								{ url: `http://localhost:${process.env.PORT}` },
+							],
+						},
+						apis: ['./src/routes/*.ts'],
+					};
+
+					const specs = swaggerJsDoc(options);
+					app.use('/api-docs', serve, setup(specs));
+				}
 
 				resolve(app);
 			});
