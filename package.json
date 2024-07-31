@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "tsc && node -r dotenv/config -e ENVIRONMENT=prod dist/server.js",
-		"dev": "nodemon -r dotenv/config -e ENVIRONMENT=dev src/server.ts",
+		"start": "tsc && node -r dotenv/config -e NODE_ENV=production dist/server.js",
+		"dev": "nodemon -r dotenv/config -e NODE_ENV=development src/server.ts",
 		"test": "jest -i --detectOpenHandles --coverage --forceExit",
 		"build": "tsc"
 	},
