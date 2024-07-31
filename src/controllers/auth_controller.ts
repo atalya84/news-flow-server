@@ -20,7 +20,7 @@ export const googleSignin = async (req: Request, res: Response) => {
             let user = await User.findOne({ 'email': email });
             if (user == null) {
                 user = await User.create({
-                    'name': email.split("@")[0],
+                    'name': payload?.name,
                     'email': email,
                     'password': '0',
                     'imgUrl': payload?.picture
