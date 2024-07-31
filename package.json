@@ -7,12 +7,22 @@
     "start": "tsc && node -r dotenv/config dist/server.js",
     "dev": "nodemon -r dotenv/config src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "prod": "cp .envprod .env && tsc -p tsconfig_prod.json && pm2 restart ecosystem.config.js --env production",
+    "prod1": "cp .envprod .env && tsc -p tsconfig_prod.json && node -r dotenv/config dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "google-auth-library": "^9.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.0",
+    "multer": "^1.4.5-lts.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
@@ -23,15 +33,6 @@
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "google-auth-library": "^9.7.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.0",
-    "multer": "^1.4.5-lts.1"
   }
 }
+

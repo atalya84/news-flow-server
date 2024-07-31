@@ -2,6 +2,7 @@ import initApp from "./app";
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
+import 'dotenv/config';
 
 initApp().then((app) => {
   if (process.env.NODE_ENV !== 'production') {

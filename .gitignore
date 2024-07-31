@@ -134,3 +134,8 @@ posts/
 profiles/
 
 .vscode
+
+# certs
+client-cert.pem
+client-key.pem
+client.csr

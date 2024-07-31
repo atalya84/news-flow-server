@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userRouter from './routes/user.routes';
+import 'dotenv/config';
 
 const initApp = (): Promise<Express> => {
 	const promise = new Promise<Express>((resolve) => {
