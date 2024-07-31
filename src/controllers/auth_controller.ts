@@ -75,7 +75,7 @@ export const register = async (req: Request, res: Response) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = await User.create({ email: email, password: hashedPassword, name: name, imgUrl: imgUrl });
-        return res.send(newUser);
+        return res.status(200).send(newUser);
     } catch (err) {
         return res.status(400).send(err.message);
     }

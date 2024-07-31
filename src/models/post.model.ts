@@ -19,9 +19,9 @@ const postSchema = new Schema<IPost>({
 	country: { type: String, required: true },
 	userId: { type: String, required: true },
 	created: { type: Date, required: true },
+	imgUrl: { type: String, required: true },
 	comments: [commentSchema],
 	body: String,
-	imgUrl: String,
 });
 
 export default model<IPost>('Post', postSchema);

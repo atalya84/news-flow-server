@@ -32,8 +32,8 @@ class PostController extends BaseController<IPost> {
 			res.status(200).send(result);
 		} catch (err) {
 			console.error('Error: ', err.message);
-			res.status(406).send(
-				'Could not update the requested object: ' + err.message
+			res.status(500).send(
+				'Could not fetch the requested object: ' + err.message
 			);
 		}
 	}
