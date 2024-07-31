@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import initApp from '../app';
-import { IUser } from '../models/user_model';
+import user_model, { IUser } from '../models/user_model';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { compare } from 'bcrypt';
@@ -23,8 +23,13 @@ beforeAll(async () => {
 });
 
 afterAll((done) => {
-	mongoose.connection.close();
-	done();
+	user_model
+		.findByIdAndDelete(user._id)
+		.exec()
+		.then(() => {
+			mongoose.connection.close();
+			done();
+		});
 });
 
 describe('Auth API tests', () => {
@@ -38,6 +43,11 @@ describe('Auth API tests', () => {
 			await compare(userInput.password, res.body.password)
 		).toBeTruthy();
 		user = res.body;
+	});
+
+	test('Middleware', async () => {
+		const res = await request(app).get('/users/').send();
+		expect(res.statusCode).not.toEqual(200);
 	});
 
 	test('POST /login', async () => {
@@ -105,6 +115,24 @@ describe('Auth API tests', () => {
 		expect(res.statusCode).toEqual(200);
 		expect(res.body.refreshToken).not.toEqual(refreshToken);
 		refreshToken = res.body.refreshToken;
+	});
+
+	test('Refresh Token hacked', async () => {
+		const res = await request(app)
+			.get('/auth/refresh')
+			.set('refresh_token', refreshToken)
+			.send();
+		console.log(res.body.refreshToken);
+		const newRefreshToken = res.body.refreshToken;
+		const res2 = await request(app)
+			.get('/auth/refresh')
+			.set('refresh_token', refreshToken)
+			.send();
+		const res3 = await request(app)
+			.get('/auth/refresh')
+			.set('refresh_token', newRefreshToken)
+			.send();
+		expect(res3.statusCode).not.toEqual(200);
 	});
 
 	test('GET /logout', async () => {
