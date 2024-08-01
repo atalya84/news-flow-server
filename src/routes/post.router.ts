@@ -32,7 +32,8 @@ const postRouter: Router = Router();
  *           type: string
  *           description: ID of comment creator
  *         created:
- *           type: date
+ *           type: string
+ *           format: date
  *           description: Comment creation date
  *     CommentInput:
  *       type: object
@@ -47,7 +48,8 @@ const postRouter: Router = Router();
  *           type: string
  *           description: ID of comment creator
  *         created:
- *           type: date
+ *           type: string
+ *           format: date
  *           description: Comment creation date
  *     Post:
  *       type: object
@@ -85,7 +87,8 @@ const postRouter: Router = Router();
  *             $ref: '#/components/schemas/Comment'
  *           description: Post comments
  *         created:
- *           type: date
+ *           type: string
+ *           format: date
  *           description: Post creation date
  *     PostInput:
  *       type: object
@@ -176,7 +179,7 @@ postRouter.get('/:id', authMiddleware, postController.get.bind(postController));
 
 /**
  * @swagger
- * /posts/:id:
+ * /posts/:
  *   post:
  *     summary: Create post
  *     tags: [Posts]
